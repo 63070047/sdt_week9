@@ -3,6 +3,7 @@ import uvicorn
 from fastapi import FastAPI
 from pydantic import BaseModel
 import numpy as np
+from fastapi.templating import Jinja2Templates
 import cv2
 import base64
 from fastapi.middleware.cors import CORSMiddleware
