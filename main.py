@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-orgin = [
+origins = [
     "http://174.129.99.100:8088/",
     "http://127.0.0.1:5500/",
     "https://stackpython.co"
