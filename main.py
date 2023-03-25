@@ -15,6 +15,7 @@ templates = Jinja2Templates(directory="templates")
 class ImageRequest(BaseModel):
     image: str
 
+
 # encode image as base64 string
 def encode_image(image):
     _, encoded_image = cv2.imencode(".jpg", image)
@@ -30,6 +31,11 @@ def apply_canny(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     edges = cv2.Canny(gray, 100, 200)
     return edges
+
+
+@app.get("/", response_class=HTMLResponse)
+async def homepage(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.post("/process-image")
