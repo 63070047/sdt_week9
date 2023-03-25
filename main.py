@@ -1,12 +1,12 @@
-
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 import numpy as np
-from fastapi.templating import Jinja2Templates
 import cv2
 import base64
-from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 
