@@ -12,7 +12,6 @@
             display: block;
             margin: 0 auto;
         }
-
         #processed-image {
             display: block;
             margin: 0 auto;
@@ -20,15 +19,63 @@
             max-height: 500px;
         }
     </style>
-    <script src="java.js"></script>
 </head>
 
 <body>
     <h1>Image Processing API</h1>
-    <input type="file" id="input-image" accept="image/*" onchange="processImage()" />
+    <input type="file" id="input-image" accept="image/*" />
     <br />
     <br />
     <img id="processed-image" />
+    <script>
+        // Get the input element
+        const inputElement = document.getElementById("input-image");
+        imageUpload.addEventListener("change", handleImageUpload);
+
+        function handleImageUpload() {
+            const file = imageUpload.files[0];
+            const reader = new FileReader();
+
+            let base64Image;
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                console.log(reader.result);
+                base64Image = reader.result;
+                const img = new Image();
+                img.src = base64Image;
+                const rdiv = document.getElementById("real");
+                rdiv.innerHTML = "";
+                rdiv.appendChild(img);
+                processImage(base64Image);
+            };
+        }
+        function processImage() {
+
+            // Get the file object
+            const file = inputElement.files[0];
+
+            // Send a POST request to the API endpoint
+            fetch("http://174.129.99.100:8088/process-image", {
+                method: "POST",
+                body: {
+                    "image": file,
+                    "name": "John",
+                    "surname": "Doe",
+                    "numbers": [1, 2, 3, 4, 5]
+                }
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    // Create a URL for the processed image
+                    const processedImageUrl = URL.createObjectURL(blob);
+
+                    // Set the src attribute of the img tag to the processed image URL
+                    const processedImage = document.getElementById("processed-image");
+                    processedImage.setAttribute("src", processedImageUrl);
+                });
+        }
+
+    </script>
 </body>
 
 </html>
