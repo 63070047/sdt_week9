@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Image Processing API</title>
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        #input-image {
+            display: block;
+            margin: 0 auto;
+        }
+
+        #processed-image {
+            display: block;
+            margin: 0 auto;
+            max-width: 500px;
+            max-height: 500px;
+        }
+    </style>
+    <script src="java.js"></script>
+</head>
+
+<body>
+    <h1>Image Processing API</h1>
+    <input type="file" id="input-image" accept="image/*" onchange="processImage()" />
+    <br />
+    <br />
+    <img id="processed-image" />
+</body>
+
+</html>
