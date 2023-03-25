@@ -9,26 +9,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-origins = [
-    "http://174.129.99.100:8088/",
-    "http://127.0.0.1:5500/",
-    "https://stackpython.co"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentails=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+templates = Jinja2Templates(directory="templates")
 
 class ImageRequest(BaseModel):
     image: str
-    name: str
-    surname: str
-    numbers: list[int]
-
 
 # encode image as base64 string
 def encode_image(image):
@@ -48,15 +32,19 @@ def apply_canny(image):
 
 
 @app.post("/process-image")
-async def process_image(image_request: ImageRequest):
-    image = decode_image(image_request.image)
-    edges = apply_canny(image)
+async def process_image(request: Request, file: UploadFile = File()):
+    #Read uploaded file as byte
+    data = file.file.read()
+    file.file.close()
+
+    #Encode byte to base64
+    image = "data:image/jpeg;base64," + base64.b64encode(data).decode("utf-8")
+    decoded = decode_image(image)
+    edges = apply_canny(decoded)
     processed_image = encode_image(edges)
 
-    return {"name": image_request.name,
-            "surname": image_request.surname,
-            "numbers": image_request.numbers,
-            "processed_image": processed_image}
+    return templates.TemplateResponse("index.html", {"request": request, "image": image, "processed_image": processed_image})
+
 
 
 
