@@ -8,15 +8,6 @@
       <input type="file" name="file" />
       <input type="submit" />
     </form>
-
-    <div>
-      {% if image %}
-      <h3>Your Image</h3>
-      <img src="{{ image }}" />
-      {% else %}
-      <h1>Image will be render here...</h1>
-      {% endif %}
-    </div>
     <div>
       {% if processed_image %}
       <h3>Processed Image</h3>
