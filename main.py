@@ -1,19 +1,25 @@
 import uvicorn
-from fastapi import FastAPI, File, UploadFile, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import numpy as np
 import cv2
 import base64
 
-
 app = FastAPI()
-
-templates = Jinja2Templates(directory="templates")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class ImageRequest(BaseModel):
     image: str
+    name: str
+    surname: str
+    numbers: list[int]
 
 
 # encode image as base64 string
@@ -33,24 +39,16 @@ def apply_canny(image):
     return edges
 
 
-@app.get("/", response_class=HTMLResponse)
-async def homepage(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
-
-
 @app.post("/process-image")
-async def process_image(request: Request, file: UploadFile = File()):
-    #Read uploaded file as byte
-    data = file.file.read()
-    file.file.close()
-
-    #Encode byte to base64
-    image = "data:image/jpeg;base64," + base64.b64encode(data).decode("utf-8")
-    decoded = decode_image(image)
-    edges = apply_canny(decoded)
+async def process_image(image_request: ImageRequest):
+    image = decode_image(image_request.image)
+    edges = apply_canny(image)
     processed_image = encode_image(edges)
 
-    return templates.TemplateResponse("index.html", {"request": request, "image": image, "processed_image": processed_image})
+    return {"name": image_request.name,
+            "surname": image_request.surname,
+            "numbers": image_request.numbers,
+            "processed_image": processed_image}
 
 
 
